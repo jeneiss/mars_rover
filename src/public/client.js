@@ -1,5 +1,4 @@
 let store = {
-  user: { name: 'Student' },
   apod: '',
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
   images: {}
@@ -20,14 +19,19 @@ const render = async (root, state) => {
 
 // create content
 const App = (state) => {
-  let { apod } = state;
+  const { apod } = state;
 
   return `
-    <header></header>
+    <header>
+      <h1>Mars Rovers</h1>
+    </header>
     <main>
-      ${Greeting(store.user.name)}
       <section>
-        <h3>Put things on the page!</h3>
+        <div>
+          <ul>
+            ${Button(store)}
+          </ul>
+        </div>
         ${ImageOfTheDay(apod)}
       </section>
     </main>
@@ -42,17 +46,18 @@ window.addEventListener('load', () => {
 
 // ------------------------------------------------------  COMPONENTS
 
-// Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
-const Greeting = (name) => {
-  if (name) {
-    return `
-        <h1>Welcome, ${name}!</h1>
-    `;
-  }
+const Button = (state) => {
+  const { rovers } = state;
 
-  return `
-    <h1>Hello!</h1>
-  `;
+  return rovers.map((rover, index) => {
+    return (
+      `
+      <button type=button value=${rover} key=${index}>
+        ${rover}
+      </button>
+      `
+    );
+  }).join('');
 };
 
 // Example of a pure function that renders infomation requested from the backend
