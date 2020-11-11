@@ -12,7 +12,11 @@ app.use(bodyParser.json());
 
 app.use('/', express.static(path.join(__dirname, '../public')));
 
-// rover manifest info
+/**
+ * @description NASA API call to get all rovers manifest info
+ * @param {object} - Request object
+ * @param {object} - Response object
+ */
 app.get('/rovers', async (req, res) => {
   try {
     let rovers = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers?api_key=${process.env.API_KEY}`)
@@ -23,6 +27,11 @@ app.get('/rovers', async (req, res) => {
   }
 });
 
+/**
+ * @description NASA API call to get photos based on supplied rover name and earth date
+ * @param {object} - Request object
+ * @param {object} - Response object
+ */
 app.get('/:name/:earth_date', async (req, res) => {
   try {
     const name = req.params.name;
@@ -36,7 +45,11 @@ app.get('/:name/:earth_date', async (req, res) => {
   }
 });
 
-// astronomy photo of the day API call
+/**
+ * @description NASA API call to get astronomy photo of the day
+ * @param {object} - Request object
+ * @param {object} - Response object
+ */
 app.get('/apod', async (req, res) => {
   try {
     let image = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${process.env.API_KEY}`)

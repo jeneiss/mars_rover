@@ -99,7 +99,7 @@ const getImageOfTheDay = (state) => {
 };
 
 const getImages = (state) => {
-  fetch('http://localhost:3000/Curiosity/2020-11-01')
+  fetch('http://localhost:3000/curiosity/2020-11-01')
     .then(res => console.log(res.json()));
 
   // return data;

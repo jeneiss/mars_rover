@@ -15,6 +15,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "immutable": "^4.0.0-rc.12",
+    "jsdoc": "^3.6.6",
     "node-fetch": "^2.6.0"
   },
   "devDependencies": {
@@ -33,20 +34,20 @@
     },
     "rules": {
       "indent": [
-          "error",
-          2
+        "error",
+        2
       ],
       "linebreak-style": [
-          "error",
-          "unix"
+        "error",
+        "unix"
       ],
       "quotes": [
-          "error",
-          "single"
+        "error",
+        "single"
       ],
       "semi": [
-          "error",
-          "always"
+        "error",
+        "always"
       ]
     }
   }
