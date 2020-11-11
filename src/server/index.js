@@ -19,7 +19,7 @@ app.use('/', express.static(path.join(__dirname, '../public')));
  */
 app.get('/rovers', async (req, res) => {
   try {
-    const rovers = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers?api_key=${process.env.API_KEY}`)
+    const rovers = await fetch(`${process.env.ROVERS_PATH}?api_key=${process.env.API_KEY}`)
       .then(res => res.json());
     res.send(rovers);
   } catch (err) {
@@ -37,7 +37,7 @@ app.get('/:name/:earth_date', async (req, res) => {
     const name = req.params.name;
     const date = req.params.earth_date;
 
-    const images = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/${name}/photos?earth_date=${date}&api_key=${process.env.API_KEY}`)
+    const images = await fetch(`${process.env.ROVERS_PATH}/${name}/photos?earth_date=${date}&api_key=${process.env.API_KEY}`)
       .then(res => res.json());
     res.send({ images });
   } catch (err) {
@@ -52,7 +52,7 @@ app.get('/:name/:earth_date', async (req, res) => {
  */
 app.get('/apod', async (req, res) => {
   try {
-    const image = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${process.env.API_KEY}`)
+    const image = await fetch(`${process.env.APOD_PATH}?api_key=${process.env.API_KEY}`)
       .then(res => res.json());
     res.send({ image });
   } catch (err) {
