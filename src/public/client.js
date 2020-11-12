@@ -1,6 +1,7 @@
 let store = {
-  apod: '',
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
+  currentRover: '',
+  currentManifest: {},
   images: {}
 };
 
@@ -16,12 +17,17 @@ const render = async (root, state) => {
   root.innerHTML = App(state);
 };
 
+// Event handlers
+const handleClick = (event) => {
+  updateStore(store, {currentRover: event.target.value});
+  console.log('clicked');
+  console.log(store.currentRover);
+};
 
 // create content
 const App = (state) => {
-  const { apod } = state;
-
-  return `
+  return (
+    `
     <header>
       <h1>Mars Rovers</h1>
     </header>
@@ -29,14 +35,17 @@ const App = (state) => {
       <section>
         <div>
           <ul>
-            ${Button(store)}
+            ${Button(state)}
           </ul>
         </div>
-        ${ImageOfTheDay(apod)}
+      </section>
+      <section>
+        ${RoverInfo(state)}
       </section>
     </main>
     <footer></footer>
-  `;
+  `
+  );
 };
 
 // listening for load event because page should load before any JS is called
@@ -52,7 +61,7 @@ const Button = (state) => {
   return rovers.map((rover, index) => {
     return (
       `
-      <button type=button value=${rover} key=${index}>
+      <button type=button value=${rover} key=${index} onclick=handleClick(event)>
         ${rover}
       </button>
       `
@@ -60,52 +69,28 @@ const Button = (state) => {
   }).join('');
 };
 
-// Example of a pure function that renders infomation requested from the backend
-const ImageOfTheDay = (apod) => {
 
-  // If image does not already exist, or it is not from today -- request it again
-  const today = new Date();
-  const photodate = new Date(apod.date);
-  // console.log(photodate.getDate(), today.getDate());
 
-  // console.log(photodate.getDate() === today.getDate());
-  if (!apod || apod.date === today.getDate() ) {
-    getImageOfTheDay(store);
-  }
+const RoverInfo = (state) => {
 
-  getImages(store);
-
-  // check if the photo of the day is actually type video!
-  if (apod.media_type === 'video') {
-    return (`
-      <p>See today's featured video <a href='${apod.url}'>here</a></p>
-      <p>${apod.title}</p>
-      <p>${apod.explanation}</p>
-    `);
-  } else {
-    return (`
-      <img src='${apod.image.url}' height='350px' width='100%' />
-      <p>${apod.image.explanation}</p>
-    `);
-  }
+  return (
+    `
+    `
+  );
 };
+
 
 // ------------------------------------------------------  API CALLS
 
-// Example API call
-const getImageOfTheDay = (state) => {
-  let { apod } = state;
+/**
+ * API call to backend for requested rover manifest info
+ * @param {object} state - The global store object
+ * @returns {object} - API manifest data
+ */
+const getRoverInfo = (state) => {
+  const { currentRover } = state;
 
-  fetch('http://localhost:3000/apod')
+  return fetch(`http://localhost:3000/manifest/${currentRover}`)
     .then(res => res.json())
-    .then(apod => updateStore(store, { apod }));
-
-  return;
-};
-
-const getImages = (state) => {
-  fetch('http://localhost:3000/curiosity/2020-11-01')
-    .then(res => console.log(res.json()));
-
-  // return data;
+    .then(currentManifest => updateStore(store, { currentManifest }));
 };
