@@ -13,21 +13,6 @@ app.use(bodyParser.json());
 app.use('/', express.static(path.join(__dirname, '../public')));
 
 /**
- * @description NASA API call to get all rovers' manifest info
- * @param {object} - Request object
- * @param {object} - Response object
- */
-app.get('/rovers', async (req, res) => {
-  try {
-    const rovers = await fetch(`${process.env.ROVERS_PATH}?api_key=${process.env.API_KEY}`)
-      .then(res => res.json());
-    res.send(rovers);
-  } catch (err) {
-    console.log('error:', err);
-  }
-});
-
-/**
  * @description NASA API call to get photos based on supplied rover name and earth date
  * @param {object} - Request object
  * @param {object} - Response object
@@ -45,6 +30,11 @@ app.get('photos/:name/:earth_date', async (req, res) => {
   }
 });
 
+/**
+ * @description NASA API call to get photos based on supplied rover name and earth date
+ * @param {object} - Request object
+ * @param {object} - Response object
+ */
 app.get('/manifest/:name/', async (req, res) => {
   try {
     const name = req.params.name;
