@@ -17,7 +17,7 @@ app.use('/', express.static(path.join(__dirname, '../public')));
  * @param {object} - Request object
  * @param {object} - Response object
  */
-app.get('photos/:name/:earth_date', async (req, res) => {
+app.get('/:name/:earth_date', async (req, res) => {
   try {
     const name = req.params.name;
     const date = req.params.earth_date;
@@ -35,7 +35,7 @@ app.get('photos/:name/:earth_date', async (req, res) => {
  * @param {object} - Request object
  * @param {object} - Response object
  */
-app.get('/manifest/:name/', async (req, res) => {
+app.get('/:name/', async (req, res) => {
   try {
     const name = req.params.name;
 

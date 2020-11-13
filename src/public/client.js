@@ -1,16 +1,20 @@
 let store = {
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
   currentRover: '',
-  currentManifest: {},
-  images: {}
+  currentManifest: ''
 };
 
 // add our markup to the page
 const root = document.getElementById('root');
 
 const updateStore = (store, newState) => {
+  const oldState = JSON.stringify(store);
   store = Object.assign(store, newState);
-  render(root, store);
+
+  // Only rerender if state values have changed
+  if (oldState !== JSON.stringify(store)) {
+    render(root, store);
+  }
 };
 
 const render = async (root, state) => {
@@ -19,9 +23,11 @@ const render = async (root, state) => {
 
 // Event handlers
 const handleClick = (event) => {
-  updateStore(store, {currentRover: event.target.value});
-  console.log('clicked');
-  console.log(store.currentRover);
+  if (store.currentRover !== event.target.value) {
+    updateStore(store, {currentRover: event.target.value});
+  }
+
+  return;
 };
 
 // create content
@@ -39,9 +45,7 @@ const App = (state) => {
           </ul>
         </div>
       </section>
-      <section>
-        ${RoverInfo(state)}
-      </section>
+      ${state.currentRover && RoverInfo(state)}
     </main>
     <footer></footer>
   `
@@ -69,12 +73,23 @@ const Button = (state) => {
   }).join('');
 };
 
-
-
 const RoverInfo = (state) => {
+  const { currentRover, currentManifest } = state;
 
+  if (!currentManifest || currentRover !== currentManifest.manifest.rover.name) {
+    getRoverInfo(state);
+    return (`<p>loading...</>`);
+  }
+
+  console.log(currentRover);
   return (
     `
+    <section>
+      <h2>${currentManifest.manifest.rover.name}</h2>
+      <div>${currentManifest.manifest.rover.launch_date}</div>
+      <div>${currentManifest.manifest.rover.landing_date}</div>
+      <div>${currentManifest.manifest.rover.status}</div>
+    </section>
     `
   );
 };
@@ -85,12 +100,12 @@ const RoverInfo = (state) => {
 /**
  * API call to backend for requested rover manifest info
  * @param {object} state - The global store object
- * @returns {object} - API manifest data
  */
 const getRoverInfo = (state) => {
   const { currentRover } = state;
+  console.log(currentRover);
 
-  return fetch(`http://localhost:3000/manifest/${currentRover}`)
+  fetch(`/${currentRover}`)
     .then(res => res.json())
-    .then(currentManifest => updateStore(store, { currentManifest }));
+    .then(currentManifest => updateStore(state, { currentManifest }));
 };
