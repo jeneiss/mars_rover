@@ -1,7 +1,8 @@
 let store = {
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
-  currentRover: '',
-  currentManifest: ''
+  currentRover: 'Curiosity',
+  currentManifest: '',
+  currentPhotos: []
 };
 
 // add our markup to the page
@@ -32,23 +33,21 @@ const handleClick = (event) => {
 
 // create content
 const App = (state) => {
+  const { currentManifest, currentPhotos } = state;
+
+  getRoverManifest(state);
+  if (currentManifest) getRoverPhotos(state);
+
   return (
     `
-    <header>
-      <h1>Mars Rovers</h1>
-    </header>
+    ${Header()}
+    ${Nav(state)}
     <main>
-      <section>
-        <div>
-          <ul>
-            ${Button(state)}
-          </ul>
-        </div>
-      </section>
-      ${state.currentRover && RoverInfo(state)}
+      ${currentManifest && RoverInfo(state)}
+      ${currentPhotos && RoverPhotos(state)}
     </main>
     <footer></footer>
-  `
+    `
   );
 };
 
@@ -57,55 +56,98 @@ window.addEventListener('load', () => {
   render(root, store);
 });
 
-// ------------------------------------------------------  COMPONENTS
+//COMPONENTS
 
-const Button = (state) => {
+const Header = () => {
+  return (
+    `
+    <header>
+      <h1>Mars Rover</h1>
+    </header>
+    `
+  );
+};
+
+const Nav = (state) => {
   const { rovers } = state;
 
-  return rovers.map((rover, index) => {
+  const buttons = rovers.map((rover, index) => {
     return (
       `
-      <button type=button value=${rover} key=${index} onclick=handleClick(event)>
+      <button
+        type=button
+        value=${rover}
+        key=${index}
+        onclick=handleClick(event)
+      >
         ${rover}
       </button>
       `
     );
   }).join('');
+
+  return (
+    `
+    <nav>
+      <ul>
+        ${buttons}
+      </ul>
+    </nav>
+    `
+  );
 };
 
 const RoverInfo = (state) => {
-  const { currentRover, currentManifest } = state;
+  const { currentManifest } = state;
 
-  if (!currentManifest || currentRover !== currentManifest.manifest.rover.name) {
-    getRoverInfo(state);
-    return (`<p>loading...</>`);
-  }
-
-  console.log(currentRover);
   return (
     `
-    <section>
+    <section class = 'rover-info'>
       <h2>${currentManifest.manifest.rover.name}</h2>
-      <div>${currentManifest.manifest.rover.launch_date}</div>
-      <div>${currentManifest.manifest.rover.landing_date}</div>
-      <div>${currentManifest.manifest.rover.status}</div>
     </section>
     `
   );
 };
 
+const RoverPhotos = (state) => {
+  let { currentPhotos } = state;
 
-// ------------------------------------------------------  API CALLS
+  const tenPhotos = currentPhotos.slice(0, 10).map((photo, index) => {
+    return (
+      `
+      <div>
+        <img
+          src='${photo.img_src}'
+          key=${index}
+        />
+      </div>
+      `
+    );
 
-/**
- * API call to backend for requested rover manifest info
- * @param {object} state - The global store object
- */
-const getRoverInfo = (state) => {
+  }).join('');
+
+  return (
+    `
+    <section class='rover-photos'>
+      ${tenPhotos}
+    </section>
+    `
+  );
+};
+
+//API CALLS
+const getRoverManifest = (state) => {
   const { currentRover } = state;
-  console.log(currentRover);
 
   fetch(`/${currentRover}`)
     .then(res => res.json())
     .then(currentManifest => updateStore(state, { currentManifest }));
+};
+
+const getRoverPhotos = (state) => {
+  const { currentRover, currentManifest } = state;
+
+  fetch(`/${currentRover}/${currentManifest.manifest.rover.max_date}`)
+    .then(res => res.json())
+    .then(photos => updateStore(state, { currentPhotos: photos.images.photos}));
 };
