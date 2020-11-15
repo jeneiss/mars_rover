@@ -34,21 +34,25 @@ const App = (state) => {
 
   const fullContent = (
     `
-    ${Header()}
-    ${Nav(state)}
-    <main>
-      ${currentRover && RoverInfo(state)}
-      ${currentRover && RoverPhotos(state)}
-    </main>
-    <footer></footer>
+    <div class='app'>
+      ${Header()}
+      ${Nav(state)}
+      <main>
+        ${currentRover && RoverInfo(state)}
+        ${currentRover && RoverPhotos(state)}
+      </main>
+      <footer></footer>
+    </div>
     `
   );
 
   const preContent = (
     `
-    ${Header()}
-    ${Nav(state)}
-    <footer></footer>
+    <div class='app'>
+      ${Header()}
+      ${Nav(state)}
+      <footer></footer>
+    </div>
     `
   );
 
@@ -130,6 +134,7 @@ const RoverPhotos = (state) => {
           class='rover-photos__content-image'
           src='${photo.img_src}'
           key=${index}
+          alt='${photo.rover.name} rover photo'
         />
         <p class='rover-photos__content-text'>Date taken: ${photo.earth_date}</p>
       </div>
@@ -150,7 +155,7 @@ const Loading = () => {
   return (
     `
     <div class='loading__container'>
-      <img src='./assets/images/loading.gif' alt='loading' />
+      <img class='loading__loader' src='./assets/images/loading.gif' alt='loading' />
     </div>
     `
   );
