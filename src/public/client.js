@@ -57,7 +57,7 @@ const Header = () => {
   return (
     `
     <header>
-      <h1>Mars Rover</h1>
+      <h1>Mars Rovers</h1>
     </header>
     `
   );
