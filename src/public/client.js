@@ -38,8 +38,8 @@ const App = (state) => {
     ${Header()}
     ${Nav(state)}
     <main>
-      ${RoverInfo(state)}
-      ${RoverPhotos(state)}
+      ${currentRover && RoverInfo(state)}
+      ${currentRover && RoverPhotos(state)}
     </main>
     <footer></footer>
     `
