@@ -1,7 +1,7 @@
+
 let store = {
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
   currentRover: 'Curiosity',
-  currentManifest: '',
   currentPhotos: []
 };
 
@@ -13,9 +13,9 @@ const updateStore = (store, newState) => {
   store = Object.assign(store, newState);
 
   // Only rerender if state values have changed
-  if (oldState !== JSON.stringify(store)) {
-    render(root, store);
-  }
+  if (oldState === JSON.stringify(store)) return;
+
+  render(root, store);
 };
 
 const render = async (root, state) => {
@@ -24,26 +24,21 @@ const render = async (root, state) => {
 
 // Event handlers
 const handleClick = (event) => {
-  if (store.currentRover !== event.target.value) {
-    updateStore(store, {currentRover: event.target.value});
-  }
+  if (store.currentRover === event.target.value) return;
 
-  return;
+  updateStore(store, {currentRover: event.target.value});
 };
 
 // create content
 const App = (state) => {
-  const { currentManifest, currentPhotos } = state;
-
-  getRoverManifest(state);
-  if (currentManifest) getRoverPhotos(state);
+  const { currentPhotos } = state;
 
   return (
     `
     ${Header()}
     ${Nav(state)}
     <main>
-      ${currentManifest && RoverInfo(state)}
+      ${RoverInfo(state)}
       ${currentPhotos && RoverPhotos(state)}
     </main>
     <footer></footer>
@@ -98,19 +93,25 @@ const Nav = (state) => {
 };
 
 const RoverInfo = (state) => {
-  const { currentManifest } = state;
+  getRoverManifest(state);
+  const currentPhoto = state.currentPhotos[0];
+
+  if (!currentPhoto) return;
 
   return (
     `
     <section class = 'rover-info'>
-      <h2>${currentManifest.manifest.rover.name}</h2>
+      <h2>${currentPhoto.rover.name}</h2>
+      <p>${currentPhoto.rover.launch_date}</p>
+      <p>${currentPhoto.rover.landing_date}</p>
+      <p>${currentPhoto.rover.status}</p>
     </section>
     `
   );
 };
 
 const RoverPhotos = (state) => {
-  let { currentPhotos } = state;
+  const { currentPhotos } = state;
 
   const tenPhotos = currentPhotos.slice(0, 10).map((photo, index) => {
     return (
@@ -123,7 +124,6 @@ const RoverPhotos = (state) => {
       </div>
       `
     );
-
   }).join('');
 
   return (
@@ -138,16 +138,19 @@ const RoverPhotos = (state) => {
 //API CALLS
 const getRoverManifest = (state) => {
   const { currentRover } = state;
+  let date = '';
 
-  fetch(`/${currentRover}`)
+  // FIGURE OUT THE CURIOSITY DATE THING--DO A COUPLE DAYS IN THE PAST
+  if (currentRover === 'Opportunity') {
+    date = '2018-06-11';
+  } else if (currentRover === 'Spirit') {
+    date = '2010-03-21';
+  } else {
+    const newDate = new Date();
+    date = `${newDate.getFullYear()}-${newDate.getMonth() + 1}-01`;
+  }
+
+  fetch(`/${currentRover}/${date}`)
     .then(res => res.json())
-    .then(currentManifest => updateStore(state, { currentManifest }));
-};
-
-const getRoverPhotos = (state) => {
-  const { currentRover, currentManifest } = state;
-
-  fetch(`/${currentRover}/${currentManifest.manifest.rover.max_date}`)
-    .then(res => res.json())
-    .then(photos => updateStore(state, { currentPhotos: photos.images.photos}));
+    .then(manifest => updateStore(state, { currentPhotos: manifest.images.photos }));
 };

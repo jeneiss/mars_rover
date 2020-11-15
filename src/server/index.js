@@ -17,10 +17,10 @@ app.use('/', express.static(path.join(__dirname, '../public')));
  * @param {object} - Request object
  * @param {object} - Response object
  */
-app.get('/:name/:earth_date', async (req, res) => {
+app.get('/:name/:date', async (req, res) => {
   try {
     const name = req.params.name;
-    const date = req.params.earth_date;
+    let date = req.params.date;
 
     const images = await fetch(`${process.env.ROVERS_PATH}/rovers/${name}/photos?earth_date=${date}&api_key=${process.env.API_KEY}`)
       .then(res => res.json());
@@ -35,16 +35,16 @@ app.get('/:name/:earth_date', async (req, res) => {
  * @param {object} - Request object
  * @param {object} - Response object
  */
-app.get('/:name/', async (req, res) => {
-  try {
-    const name = req.params.name;
+// app.get('/:name/', async (req, res) => {
+//   try {
+//     const name = req.params.name;
 
-    const manifest = await fetch(`${process.env.ROVERS_PATH}/rovers/${name}?api_key=${process.env.API_KEY}`)
-      .then(res => res.json());
-    res.send({ manifest });
-  } catch (err) {
-    console.log('error:', err);
-  }
-});
+//     const manifest = await fetch(`${process.env.ROVERS_PATH}/rovers/${name}?api_key=${process.env.API_KEY}`)
+//       .then(res => res.json());
+//     res.send({ manifest });
+//   } catch (err) {
+//     console.log('error:', err);
+//   }
+// });
 
 app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
