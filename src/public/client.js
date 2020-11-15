@@ -31,19 +31,29 @@ const handleClick = (event) => {
 
 // create content
 const App = (state) => {
-  const { currentRover, currentPhotos } = state;
+  const { currentRover } = state;
 
-  return (
+  const fullContent = (
     `
     ${Header()}
     ${Nav(state)}
     <main>
-      ${currentRover && RoverInfo(state)}
-      ${currentPhotos && RoverPhotos(state)}
+      ${RoverInfo(state)}
+      ${RoverPhotos(state)}
     </main>
     <footer></footer>
     `
   );
+
+  const preContent = (
+    `
+    ${Header()}
+    ${Nav(state)}
+    <footer></footer>
+    `
+  );
+
+  return currentRover ? fullContent : preContent;
 };
 
 // listening for load event because page should load before any JS is called
@@ -57,7 +67,7 @@ const Header = () => {
   return (
     `
     <header>
-      <h1>Mars Rovers</h1>
+      <h1 class='header__title'>Mars Rovers</h1>
     </header>
     `
   );
@@ -69,7 +79,7 @@ const Nav = (state) => {
   const buttons = rovers.map((rover, index) => {
     return (
       `
-      <button
+      <button class='nav__rover-btn'
         type=button
         value=${rover}
         key=${index}
@@ -84,7 +94,7 @@ const Nav = (state) => {
   return (
     `
     <nav>
-      <ul>
+      <ul class='nav__rover-btn-container'>
         ${buttons}
       </ul>
     </nav>
@@ -100,11 +110,11 @@ const RoverInfo = (state) => {
 
   return (
     `
-    <section class = 'rover-info'>
-      <h2>${currentPhoto.rover.name}</h2>
-      <p>${currentPhoto.rover.launch_date}</p>
-      <p>${currentPhoto.rover.landing_date}</p>
-      <p>${currentPhoto.rover.status}</p>
+    <section class='rover-info__container'>
+      <h2 class='rover-info__content-title'>${currentPhoto.rover.name}</h2>
+      <div class='rover-info__content-text'>${currentPhoto.rover.launch_date}</div>
+      <div class='rover-info__content-text'>${currentPhoto.rover.landing_date}</div>
+      <div class='rover-info__content-text'>${currentPhoto.rover.status}</div>
     </section>
     `
   );
@@ -116,12 +126,13 @@ const RoverPhotos = (state) => {
   const tenPhotos = currentPhotos.slice(0, 10).map((photo, index) => {
     return (
       `
-      <div>
+      <div class='rover-photos__content'>
         <img
+          class='rover-photos__content-image'
           src='${photo.img_src}'
           key=${index}
         />
-        <p>Date taken: ${photo.earth_date}</p>
+        <p class='rover-photos__content-text'>Date taken: ${photo.earth_date}</p>
       </div>
       `
     );
@@ -129,7 +140,7 @@ const RoverPhotos = (state) => {
 
   return (
     `
-    <section class='rover-photos'>
+    <section class='rover-photos__container'>
       ${tenPhotos}
     </section>
     `
@@ -139,7 +150,9 @@ const RoverPhotos = (state) => {
 const Loading = () => {
   return (
     `
-    <p>Loading...</p>
+    <div class='loading__container'
+      <div class='loading__content'>Loading...</div>
+    </div>
     `
   );
 };
