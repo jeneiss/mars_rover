@@ -149,7 +149,7 @@ const getRoverManifest = (state) => {
   const { currentRover } = state;
   let date = '';
 
-  // Hardcode Opp and Spirit's final dates; Curiosity still active so get a few days in the past
+  // Hardcode Opp and Spirit's final dates; Curiosity still active so get date a few days before today
   if (currentRover === 'Opportunity') {
     date = '2018-06-11';
   } else if (currentRover === 'Spirit') {
