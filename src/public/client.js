@@ -1,7 +1,7 @@
 
 let store = {
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
-  currentRover: 'Curiosity',
+  currentRover: '',
   currentPhotos: []
 };
 
@@ -31,14 +31,14 @@ const handleClick = (event) => {
 
 // create content
 const App = (state) => {
-  const { currentPhotos } = state;
+  const { currentRover, currentPhotos } = state;
 
   return (
     `
     ${Header()}
     ${Nav(state)}
     <main>
-      ${RoverInfo(state)}
+      ${currentRover && RoverInfo(state)}
       ${currentPhotos && RoverPhotos(state)}
     </main>
     <footer></footer>
@@ -96,7 +96,7 @@ const RoverInfo = (state) => {
   getRoverManifest(state);
   const currentPhoto = state.currentPhotos[0];
 
-  if (!currentPhoto) return;
+  if (!currentPhoto) return Loading();
 
   return (
     `
@@ -121,6 +121,7 @@ const RoverPhotos = (state) => {
           src='${photo.img_src}'
           key=${index}
         />
+        <p>Date taken: ${photo.earth_date}</p>
       </div>
       `
     );
@@ -135,19 +136,27 @@ const RoverPhotos = (state) => {
   );
 };
 
+const Loading = () => {
+  return (
+    `
+    <p>Loading...</p>
+    `
+  );
+};
+
 //API CALLS
 const getRoverManifest = (state) => {
   const { currentRover } = state;
   let date = '';
 
-  // FIGURE OUT THE CURIOSITY DATE THING--DO A COUPLE DAYS IN THE PAST
+  // Hardcode Opp and Spirit's final dates; Curiosity still active so get a few days in the past
   if (currentRover === 'Opportunity') {
     date = '2018-06-11';
   } else if (currentRover === 'Spirit') {
     date = '2010-03-21';
   } else {
     const newDate = new Date();
-    date = `${newDate.getFullYear()}-${newDate.getMonth() + 1}-01`;
+    date = `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${newDate.getDate() - 2 < 0 ? 30 : newDate.getDate() - 2}`;
   }
 
   fetch(`/${currentRover}/${date}`)
