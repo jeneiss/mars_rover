@@ -1,4 +1,3 @@
-
 let store = {
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
   currentRover: '',
@@ -150,8 +149,8 @@ const RoverPhotos = (state) => {
 const Loading = () => {
   return (
     `
-    <div class='loading__container'
-      <div class='loading__content'>Loading...</div>
+    <div class='loading__container'>
+      <img src='./assets/images/loading.gif' alt='loading' />
     </div>
     `
   );
