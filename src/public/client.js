@@ -41,7 +41,7 @@ const App = (state) => {
         ${currentRover && RoverInfo(state)}
         ${currentRover && RoverPhotos(state)}
       </main>
-      <footer></footer>
+      ${Footer()}
     </div>
     `
   );
@@ -51,7 +51,8 @@ const App = (state) => {
     <div class='app'>
       ${Header()}
       ${Nav(state)}
-      <footer></footer>
+      ${Precontent()}
+      ${Footer()}
     </div>
     `
   );
@@ -151,12 +152,32 @@ const RoverPhotos = (state) => {
   );
 };
 
+const Precontent = () => {
+  return (
+    `
+    <div class='precontent__container'>
+      <div class='precontent__text'>Select a rover to access its manifest and most recent photos.</div>
+    </div>
+    `
+  )
+}
+
 const Loading = () => {
   return (
     `
     <div class='loading__container'>
       <img class='loading__loader' src='./assets/images/loading.gif' alt='loading' />
     </div>
+    `
+  );
+};
+
+const Footer = () => {
+  return (
+    `
+    <footer class='footer__container'>
+      <div class='footer__content'>All information courtesy of NASA Open APIs</div>
+    </footer>
     `
   );
 };
