@@ -115,9 +115,9 @@ const RoverInfo = (state) => {
     `
     <section class='rover-info__container'>
       <h2 class='rover-info__content-title'>${currentPhoto.rover.name}</h2>
-      <div class='rover-info__content-text'>${currentPhoto.rover.launch_date}</div>
-      <div class='rover-info__content-text'>${currentPhoto.rover.landing_date}</div>
-      <div class='rover-info__content-text'>${currentPhoto.rover.status}</div>
+      <div class='rover-info__content-text'>Launch date: ${currentPhoto.rover.launch_date}</div>
+      <div class='rover-info__content-text'>Landing date: ${currentPhoto.rover.landing_date}</div>
+      <div class='rover-info__content-text'>Status: ${currentPhoto.rover.status}</div>
     </section>
     `
   );

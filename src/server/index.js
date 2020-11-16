@@ -30,21 +30,4 @@ app.get('/:name/:date', async (req, res) => {
   }
 });
 
-/**
- * @description NASA API call to get photos based on supplied rover name and earth date
- * @param {object} - Request object
- * @param {object} - Response object
- */
-// app.get('/:name/', async (req, res) => {
-//   try {
-//     const name = req.params.name;
-
-//     const manifest = await fetch(`${process.env.ROVERS_PATH}/rovers/${name}?api_key=${process.env.API_KEY}`)
-//       .then(res => res.json());
-//     res.send({ manifest });
-//   } catch (err) {
-//     console.log('error:', err);
-//   }
-// });
-
 app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
