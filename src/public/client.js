@@ -1,12 +1,18 @@
+// Global state container
 let store = {
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
   currentRover: '',
   currentPhotos: []
 };
 
-// add our markup to the page
+// Add markup to the page
 const root = document.getElementById('root');
 
+/**
+ * @description Update store with new state information and rerenders to DOM
+ * @param {object} - store
+ * @param {object} - new state information
+ */
 const updateStore = (store, newState) => {
   const oldState = JSON.stringify(store);
   store = Object.assign(store, newState);
@@ -17,18 +23,31 @@ const updateStore = (store, newState) => {
   render(root, store);
 };
 
+/**
+ * @description Update DOM with store
+ * @param {object} - DOM element with ID of 'root'
+ * @param {object} - store
+ */
 const render = async (root, state) => {
+  console.log(root);
   root.innerHTML = App(state);
 };
 
-// Event handlers
+/**
+ * @description Click event handler for nav buttons
+ * @param {object} - Event object
+ */
 const handleClick = (event) => {
   if (store.currentRover === event.target.value) return;
 
   updateStore(store, {currentRover: event.target.value});
 };
 
-// create content
+/**
+ * @description App component
+ * @param {object} - store
+ * @returns {string} - HTML with base App elements
+ */
 const App = (state) => {
   const { currentRover } = state;
 
@@ -65,8 +84,12 @@ window.addEventListener('load', () => {
   render(root, store);
 });
 
-//COMPONENTS
-
+/* -----COMPONENTS----- */
+/**
+ * @description Header component
+ * @param {object} - store
+ * @returns {string} - HTML with header elements
+ */
 const Header = () => {
   return (
     `
@@ -77,6 +100,11 @@ const Header = () => {
   );
 };
 
+/**
+ * @description Nav component
+ * @param {object} - store
+ * @returns {string} - HTML with Nav buttons
+ */
 const Nav = (state) => {
   const { rovers } = state;
 
@@ -106,6 +134,11 @@ const Nav = (state) => {
   );
 };
 
+/**
+ * @description RoverInfo component calls getRoverManifest() to access NASA API info
+ * @param {object} - store
+ * @returns {string} - HTML with Rover manifest info
+ */
 const RoverInfo = (state) => {
   getRoverManifest(state);
   const currentPhoto = state.currentPhotos[0];
@@ -124,6 +157,11 @@ const RoverInfo = (state) => {
   );
 };
 
+/**
+ * @description RoverPhotos component selects latest 10 photos from currentPhotos
+ * @param {object} - store
+ * @returns {string} - HTML string with latest 10 Rover photos
+ */
 const RoverPhotos = (state) => {
   const { currentPhotos } = state;
 
@@ -152,6 +190,11 @@ const RoverPhotos = (state) => {
   );
 };
 
+/**
+ * @description Precontent component
+ * @param {object} - store
+ * @returns {string} - HTML string with Precontent instructions
+ */
 const Precontent = () => {
   return (
     `
@@ -159,9 +202,14 @@ const Precontent = () => {
       <div class='precontent__text'>Select a rover to access its manifest and most recent photos.</div>
     </div>
     `
-  )
-}
+  );
+};
 
+/**
+ * @description Loading component
+ * @param {object} - store
+ * @returns {string} - HTML string with loading gif
+ */
 const Loading = () => {
   return (
     `
@@ -172,6 +220,11 @@ const Loading = () => {
   );
 };
 
+/**
+ * @description Footer component
+ * @param {object} - store
+ * @returns {string} - HTML string with footer text
+ */
 const Footer = () => {
   return (
     `
@@ -182,7 +235,11 @@ const Footer = () => {
   );
 };
 
-//API CALLS
+/* -----API CALLS----- */
+/**
+ * @description Accesses NASA API json from backend with appropriate max_date for latest photos and updates store
+ * @param {object} - store
+ */
 const getRoverManifest = (state) => {
   const { currentRover } = state;
   let date = '';
