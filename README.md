@@ -3,6 +3,7 @@ A React-inspired vanilla JS exercise following a functional programming paradigm
 
 ## Usage
 'yarn start': runs server at http://localhost:3000
+
 'yarn dev': runs server at http://localhost:3000 using nodemon for hot reloading
 
 ## Browser compatibility
