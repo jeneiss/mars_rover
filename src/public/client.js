@@ -1,13 +1,18 @@
-
+// Global state container
 let store = {
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
   currentRover: '',
   currentPhotos: []
 };
 
-// add our markup to the page
+// Add markup to the page
 const root = document.getElementById('root');
 
+/**
+ * @description Update store with new state information and rerenders to DOM
+ * @param {object} - store
+ * @param {object} - new state information
+ */
 const updateStore = (store, newState) => {
   const oldState = JSON.stringify(store);
   store = Object.assign(store, newState);
@@ -18,32 +23,60 @@ const updateStore = (store, newState) => {
   render(root, store);
 };
 
+/**
+ * @description Update DOM with store
+ * @param {object} - DOM element with ID of 'root'
+ * @param {object} - store
+ */
 const render = async (root, state) => {
+  console.log(root);
   root.innerHTML = App(state);
 };
 
-// Event handlers
+/**
+ * @description Click event handler for nav buttons
+ * @param {object} - Event object
+ */
 const handleClick = (event) => {
   if (store.currentRover === event.target.value) return;
 
   updateStore(store, {currentRover: event.target.value});
 };
 
-// create content
+/**
+ * @description App component
+ * @param {object} - store
+ * @returns {string} - HTML with base App elements
+ */
 const App = (state) => {
-  const { currentRover, currentPhotos } = state;
+  const { currentRover } = state;
 
-  return (
+  const fullContent = (
     `
-    ${Header()}
-    ${Nav(state)}
-    <main>
-      ${currentRover && RoverInfo(state)}
-      ${currentPhotos && RoverPhotos(state)}
-    </main>
-    <footer></footer>
+    <div class='app'>
+      ${Header()}
+      ${Nav(state)}
+      <main>
+        ${currentRover && RoverInfo(state)}
+        ${currentRover && RoverPhotos(state)}
+      </main>
+      ${Footer()}
+    </div>
     `
   );
+
+  const preContent = (
+    `
+    <div class='app'>
+      ${Header()}
+      ${Nav(state)}
+      ${Precontent()}
+      ${Footer()}
+    </div>
+    `
+  );
+
+  return currentRover ? fullContent : preContent;
 };
 
 // listening for load event because page should load before any JS is called
@@ -51,25 +84,34 @@ window.addEventListener('load', () => {
   render(root, store);
 });
 
-//COMPONENTS
-
+/* -----COMPONENTS----- */
+/**
+ * @description Header component
+ * @param {object} - store
+ * @returns {string} - HTML with header elements
+ */
 const Header = () => {
   return (
     `
     <header>
-      <h1>Mars Rover</h1>
+      <h1 class='header__title'>Mars Rovers</h1>
     </header>
     `
   );
 };
 
+/**
+ * @description Nav component
+ * @param {object} - store
+ * @returns {string} - HTML with Nav buttons
+ */
 const Nav = (state) => {
   const { rovers } = state;
 
   const buttons = rovers.map((rover, index) => {
     return (
       `
-      <button
+      <button class='nav__rover-btn'
         type=button
         value=${rover}
         key=${index}
@@ -84,7 +126,7 @@ const Nav = (state) => {
   return (
     `
     <nav>
-      <ul>
+      <ul class='nav__rover-btn-container'>
         ${buttons}
       </ul>
     </nav>
@@ -92,6 +134,11 @@ const Nav = (state) => {
   );
 };
 
+/**
+ * @description RoverInfo component calls getRoverManifest() to access NASA API info
+ * @param {object} - store
+ * @returns {string} - HTML with Rover manifest info
+ */
 const RoverInfo = (state) => {
   getRoverManifest(state);
   const currentPhoto = state.currentPhotos[0];
@@ -100,28 +147,35 @@ const RoverInfo = (state) => {
 
   return (
     `
-    <section class = 'rover-info'>
-      <h2>${currentPhoto.rover.name}</h2>
-      <p>${currentPhoto.rover.launch_date}</p>
-      <p>${currentPhoto.rover.landing_date}</p>
-      <p>${currentPhoto.rover.status}</p>
+    <section class='rover-info__container'>
+      <h2 class='rover-info__content-title'>${currentPhoto.rover.name}</h2>
+      <div class='rover-info__content-text'>Launch date: ${currentPhoto.rover.launch_date}</div>
+      <div class='rover-info__content-text'>Landing date: ${currentPhoto.rover.landing_date}</div>
+      <div class='rover-info__content-text'>Status: ${currentPhoto.rover.status}</div>
     </section>
     `
   );
 };
 
+/**
+ * @description RoverPhotos component selects latest 10 photos from currentPhotos
+ * @param {object} - store
+ * @returns {string} - HTML string with latest 10 Rover photos
+ */
 const RoverPhotos = (state) => {
   const { currentPhotos } = state;
 
   const tenPhotos = currentPhotos.slice(0, 10).map((photo, index) => {
     return (
       `
-      <div>
+      <div class='rover-photos__content'>
         <img
+          class='rover-photos__content-image'
           src='${photo.img_src}'
           key=${index}
+          alt='${photo.rover.name} rover photo'
         />
-        <p>Date taken: ${photo.earth_date}</p>
+        <p class='rover-photos__content-text'>Date taken: ${photo.earth_date}</p>
       </div>
       `
     );
@@ -129,22 +183,63 @@ const RoverPhotos = (state) => {
 
   return (
     `
-    <section class='rover-photos'>
+    <section class='rover-photos__container'>
       ${tenPhotos}
     </section>
     `
   );
 };
 
-const Loading = () => {
+/**
+ * @description Precontent component
+ * @param {object} - store
+ * @returns {string} - HTML string with Precontent instructions
+ */
+const Precontent = () => {
   return (
     `
-    <p>Loading...</p>
+    <div class='precontent__container'>
+      <div class='precontent__text'>Select a rover to access its manifest and most recent photos.</div>
+    </div>
     `
   );
 };
 
-//API CALLS
+/**
+ * @description Loading component
+ * @param {object} - store
+ * @returns {string} - HTML string with loading gif
+ */
+const Loading = () => {
+  return (
+    `
+    <div class='loading__container'>
+      <img class='loading__loader' src='./assets/images/loading.gif' alt='loading' />
+    </div>
+    `
+  );
+};
+
+/**
+ * @description Footer component
+ * @param {object} - store
+ * @returns {string} - HTML string with footer text
+ */
+const Footer = () => {
+  return (
+    `
+    <footer class='footer__container'>
+      <div class='footer__content'>All information courtesy of NASA Open APIs</div>
+    </footer>
+    `
+  );
+};
+
+/* -----API CALLS----- */
+/**
+ * @description Accesses NASA API json from backend with appropriate max_date for latest photos and updates store
+ * @param {object} - store
+ */
 const getRoverManifest = (state) => {
   const { currentRover } = state;
   let date = '';

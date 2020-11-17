@@ -1,38 +1,160 @@
-/* -------------------  MOBILE  --------------------- */
-
-body {
-  display: flex;
-  flex-direction: column;
-  font-family: Arial;
-  min-height: 100vh;
+/* -----FONTS----- */
+/* latin-ext */
+@font-face {
+  font-family: 'Mina';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Mina Bold'), local('Mina-Bold'), url(https://fonts.gstatic.com/s/mina/v4/-nF8OGc18vARl4NM-izT9qOk.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Mina';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Mina Bold'), local('Mina-Bold'), url(https://fonts.gstatic.com/s/mina/v4/-nF8OGc18vARl4NM-iLT9g.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-header {
-  /* header styles */
+/* -----VARIABLES----- */
+:root {
+  --heading-font: 'Mina', Arial, sans-serif;
+  --green: #00FF00;
+  --green-dark: #00CC00;
+}
+
+/* -----MOBILE----- */
+
+body {
+  font-family: Arial;
+  background-color: #000;
+  color: #fff;
+}
+
+.app {
+  position: relative;
+  min-height: calc(100vh - 2rem);
+  width: 100%;
+  margin: 0 auto;
+}
+
+.header__title {
+  margin: 2rem auto;
+  padding: 0rem 1rem;
+  text-align: center;
+  font-family: var(--heading-font);
+  font-size: 3.5rem;
+  line-height: 1.25;
+}
+
+.nav__rover-btn-container {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin: 1rem 0 2rem;
+  width: 100%;
+}
+
+.nav__rover-btn {
+  padding: 0.75rem;
+  width: 100%;
+  font-size: 1rem;
+  font-family: var(--heading-font);
+  border: 1px solid #000;
+  background-color: var(--green);
+}
+
+.nav__rover-btn:hover {
+  cursor: pointer;
+  background-color: var(--green-dark);
+}
+
+.precontent__text {
+  padding: 0 1rem;
+  text-align: center;
 }
 
 main {
-  flex: 1;
-  padding: 20px;
+  width: 100%;
+  padding: 4rem;
+}
+
+.rover-info__container {
+  margin-bottom: 2rem;
+}
+
+.rover-info__content-title {
+  font-size: 2rem;
+}
+
+.rover-info__content-text {
+  margin-top: 1rem;
+}
+
+.rover-photos__container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.rover-photos__content {
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+.rover-photos__content-image {
+  margin-bottom: 0.5rem;
+  min-width: 100%;
+  box-shadow: 0px 0px 10px 0px rgba(249,249,249, 20%);
 }
 
 footer {
-  /* footer styles */
+  content: '';
+  position: absolute;
+  width: 100%;
+  padding: 1rem;
+  bottom: 0;
+  border-top: 1px solid #f9f9f9;
 }
 
-/* -------------------  TABLET  --------------------- */
+.loading__container {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.loading__loader {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* -----TABLET----- */
 @media (min-width: 768px) {
-  /* use mobile */
+  .header__title {
+    width: 65%;
+    font-size: 5rem;
+  }
+
+  .nav__rover-btn{
+    width: 33.33333%;
+    flex-wrap: nowrap;
+  }
+
+  .rover-photos__content {
+    margin: 1rem 1rem 2rem;
+    width: calc(50% - 2rem);
+  }
 }
 
-/* -------------------  DESKTOP  -------------------- */
+/* -----DESKTOP----- */
 
 @media (min-width: 1224px) {
-  /* use mobile */
-}
+  .app {
+    width: 76.5rem
+  }
 
-/* -------------------  LARGE SCREENS  -------------- */
-
-@media (min-width: 1824px) {
-  /* use mobile */
+  .rover-photos__content {
+    width: calc(33.33333% - 2rem);
+  }
 }
