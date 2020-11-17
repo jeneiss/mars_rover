@@ -1,9 +1,9 @@
 // Global state container
-let store = {
+let store = Immutable.fromJS({
   rovers: ['Curiosity', 'Opportunity', 'Spirit'],
   currentRover: '',
   currentPhotos: []
-};
+});
 
 // Add markup to the page
 const root = document.getElementById('root');
@@ -15,7 +15,7 @@ const root = document.getElementById('root');
  */
 const updateStore = (store, newState) => {
   const oldState = JSON.stringify(store);
-  store = Object.assign(store, newState);
+  store = store.merge(newState);
 
   // Only rerender if state values have changed
   if (oldState === JSON.stringify(store)) return;
@@ -29,7 +29,6 @@ const updateStore = (store, newState) => {
  * @param {object} - store
  */
 const render = async (root, state) => {
-  console.log(root);
   root.innerHTML = App(state);
 };
 
@@ -49,7 +48,7 @@ const handleClick = (event) => {
  * @returns {string} - HTML with base App elements
  */
 const App = (state) => {
-  const { currentRover } = state;
+  const currentRover = state.get('currentRover');
 
   const fullContent = (
     `
@@ -106,7 +105,7 @@ const Header = () => {
  * @returns {string} - HTML with Nav buttons
  */
 const Nav = (state) => {
-  const { rovers } = state;
+  const rovers = state.get('rovers');
 
   const buttons = rovers.map((rover, index) => {
     return (
@@ -141,17 +140,17 @@ const Nav = (state) => {
  */
 const RoverInfo = (state) => {
   getRoverManifest(state);
-  const currentPhoto = state.currentPhotos[0];
+  const currentPhoto = state.getIn(['currentPhotos', 0]);
 
   if (!currentPhoto) return Loading();
 
   return (
     `
     <section class='rover-info__container'>
-      <h2 class='rover-info__content-title'>${currentPhoto.rover.name}</h2>
-      <div class='rover-info__content-text'>Launch date: ${currentPhoto.rover.launch_date}</div>
-      <div class='rover-info__content-text'>Landing date: ${currentPhoto.rover.landing_date}</div>
-      <div class='rover-info__content-text'>Status: ${currentPhoto.rover.status}</div>
+      <h2 class='rover-info__content-title'>${currentPhoto.getIn(['rover', 'name'])}</h2>
+      <div class='rover-info__content-text'>Launch date: ${currentPhoto.getIn(['rover', 'launch_date'])}</div>
+      <div class='rover-info__content-text'>Landing date: ${currentPhoto.getIn(['rover', 'landing_date'])}</div>
+      <div class='rover-info__content-text'>Status: ${currentPhoto.getIn(['rover', 'status'])}</div>
     </section>
     `
   );
@@ -163,7 +162,7 @@ const RoverInfo = (state) => {
  * @returns {string} - HTML string with latest 10 Rover photos
  */
 const RoverPhotos = (state) => {
-  const { currentPhotos } = state;
+  const currentPhotos = state.get('currentPhotos');
 
   const tenPhotos = currentPhotos.slice(0, 10).map((photo, index) => {
     return (
@@ -171,11 +170,11 @@ const RoverPhotos = (state) => {
       <div class='rover-photos__content'>
         <img
           class='rover-photos__content-image'
-          src='${photo.img_src}'
+          src='${photo.get('img_src')}'
           key=${index}
-          alt='${photo.rover.name} rover photo'
+          alt='${photo.getIn('rover', 'name')} rover photo'
         />
-        <p class='rover-photos__content-text'>Date taken: ${photo.earth_date}</p>
+        <p class='rover-photos__content-text'>Date taken: ${photo.get('earth_date')}</p>
       </div>
       `
     );
@@ -241,7 +240,7 @@ const Footer = () => {
  * @param {object} - store
  */
 const getRoverManifest = (state) => {
-  const { currentRover } = state;
+  const currentRover = state.get('currentRover');
   let date = '';
 
   // Hardcode Opp and Spirit's final dates; Curiosity still active so get date a few days before today

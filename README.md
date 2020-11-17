@@ -1,5 +1,5 @@
 # mars_rover
-A React-inspired vanilla JS exercise following a functional programming paradigm. Consumes the NASA Open API at <a href='https://api.nasa.gov/'>api.nasa.gov</a> with a Node.js/Express.js backend.
+A React-inspired vanilla JS exercise following a functional programming paradigm and using Immutable.js for state management. Consumes the NASA Open API at <a href='https://api.nasa.gov/'>api.nasa.gov</a> with a Node.js/Express.js backend.
 
 ## Usage
 'yarn start': runs server at http://localhost:3000
