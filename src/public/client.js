@@ -236,24 +236,20 @@ const Footer = () => {
 
 /* -----API CALLS----- */
 /**
- * @description Accesses NASA API json from backend with appropriate max_date for latest photos and updates store
+ * @description Accesses NASA API json from backend: fetches manifest, then fetches photos with manifest's max_date, and updates store
  * @param {object} - store
  */
 const getRoverManifest = (state) => {
   const currentRover = state.get('currentRover');
-  let date = '';
 
-  // Hardcode Opp and Spirit's final dates; Curiosity still active so get date a few days before today
-  if (currentRover === 'Opportunity') {
-    date = '2018-06-11';
-  } else if (currentRover === 'Spirit') {
-    date = '2010-03-21';
-  } else {
-    const newDate = new Date();
-    date = `${newDate.getFullYear()}-${newDate.getMonth() + 1}-${newDate.getDate() - 2 < 0 ? 30 : newDate.getDate() - 2}`;
-  }
-
-  fetch(`/${currentRover}/${date}`)
+  fetch(`/${currentRover}`)
     .then(res => res.json())
-    .then(manifest => updateStore(state, { currentPhotos: manifest.images.photos }));
+    .then(data => {
+      const maxDate = data.manifest.rover.max_date;
+      fetch(`/${currentRover}/${maxDate}`)
+        .then(res => res.json())
+        .then(data => updateStore(state, { currentPhotos: data.images.photos }))
+        .catch(err => console.log('photos', err));
+    })
+    .catch(err => console.log('manifest', err));
 };
